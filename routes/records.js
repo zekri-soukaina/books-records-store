@@ -5,6 +5,7 @@ import createRecord from "../services/records/createRecord.js";
 import updateRecordById from "../services/records/updateRecordById.js";
 import deleteRecord from "../services/records/deleteRecord.js";
 import authMiddleware from "../middleware/auth.js";
+import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = express.Router();
 
@@ -20,20 +21,15 @@ router.get("/", (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
-  try {
+router.get(
+  "/:id",
+  (req, res) => {
     const { id } = req.params;
     const record = getRecordById(id);
-    if (!record) {
-      record.status(404).send(`record with id ${id} was not found`);
-    } else {
-      res.status(200).json(record);
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("something went wrong while getting record with id");
-  }
-});
+    res.status(200).json(record);
+  },
+  notFoundErrorHandler
+);
 
 router.post("/", authMiddleware, (req, res) => {
   try {
@@ -46,8 +42,10 @@ router.post("/", authMiddleware, (req, res) => {
   }
 });
 
-router.put("/:id", authMiddleware, (req, res) => {
-  try {
+router.put(
+  "/:id",
+  authMiddleware,
+  (req, res) => {
     const { id } = req.params;
     const { title, artist, year, available, genre } = req.body;
     const updatedRecord = updateRecordById(
@@ -59,26 +57,21 @@ router.put("/:id", authMiddleware, (req, res) => {
       genre
     );
     res.status(200).json(updatedRecord);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("something went wrong while updating record by id!");
-  }
-});
+  },
+  notFoundErrorHandler
+);
 
-router.delete("/:id", authMiddleware, (req, res) => {
-  try {
+router.delete(
+  "/:id",
+  authMiddleware,
+  (req, res) => {
     const { id } = req.params;
     const deletedRecord = deleteRecord(id);
-    if (!deletedRecord) {
-      res.status(404).send(`record with id ${id} was not found`);
-    }
     res.status(200).json({
       message: `record with id ${deletedRecord} was deleted.`,
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("someting went wrong while deleting  record by id");
-  }
-});
+  },
+  notFoundErrorHandler
+);
 
 export default router;

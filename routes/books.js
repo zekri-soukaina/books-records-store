@@ -23,14 +23,9 @@ router.get("/", (req, res) => {
 router.get(
   "/:id",
   (req, res) => {
-    try {
-      const { id } = req.params;
-      const book = getBookById(id);
-      res.status(200).json(book);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Something went wrong while getting book by id!");
-    }
+    const { id } = req.params;
+    const book = getBookById(id);
+    res.status(200).json(book);
   },
   notFoundErrorHandler
 );
@@ -50,23 +45,18 @@ router.put(
   "/:id",
   authMiddleware,
   (req, res) => {
-    try {
-      const { id } = req.params;
-      const { title, author, isbn, pages, available, genre } = req.body;
-      const updatedBook = updateBookById(
-        id,
-        title,
-        author,
-        isbn,
-        pages,
-        available,
-        genre
-      );
-      res.status(200).json(updatedBook);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Something went wrong while updating book by id!");
-    }
+    const { id } = req.params;
+    const { title, author, isbn, pages, available, genre } = req.body;
+    const updatedBook = updateBookById(
+      id,
+      title,
+      author,
+      isbn,
+      pages,
+      available,
+      genre
+    );
+    res.status(200).json(updatedBook);
   },
   notFoundErrorHandler
 );
@@ -91,11 +81,9 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
-
   (req, res) => {
     const { id } = req.params;
     const deletedBookId = deleteBook(id);
-
     res.status(200).json({
       message: `Book with id ${deletedBookId} was deleted!`,
     });
