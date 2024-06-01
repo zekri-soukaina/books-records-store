@@ -13,3 +13,7 @@ Terminal
 - npm i express-oauth2-jwt-bearer
 - npm install --save @sentry/node
 - npm install --save @sentry/node @sentry/profiling-node
+- npx @sentry/wizard@latest -i sourcemaps
+
+DB:
+- npm i prisma -D
